@@ -165,6 +165,14 @@ class CPU {
     /// &1 -> +1 if on odd cycle
     ///
     inline void skip_DMA_cycles() { skip_cycles += 513 + (cycles & 1); }
+
+    inline size_t state_size() noexcept {
+        return sizeof(register_PC) + 4 * sizeof(NES_Byte) + sizeof(flags) + 2 * sizeof(int);
+    }
+
+    void dump_state(char *buffer);
+
+    void load_state(const char *buffer);
 };
 
 }  // namespace NES

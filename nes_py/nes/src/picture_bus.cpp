@@ -5,6 +5,8 @@
 //  Copyright (c) 2019 Christian Kauten. All rights reserved.
 //
 
+#include <cstring>
+
 #include "picture_bus.hpp"
 #include "log.hpp"
 
@@ -83,6 +85,30 @@ void PictureBus::update_mirroring() {
                 mapper->getNameTableMirroring() <<
                 std::endl;
     }
+}
+
+void PictureBus::dump_state(char *buffer) {
+	*reinterpret_cast<size_t *>(buffer) = ram.size();
+	buffer += sizeof(size_t);
+	memcpy(buffer, ram.data(), ram.size());
+	buffer += ram.size();
+	memcpy(buffer, name_tables, sizeof(name_tables));
+	buffer += sizeof(name_tables);
+	*reinterpret_cast<size_t *>(buffer) = palette.size();
+	buffer += sizeof(size_t);
+	memcpy(buffer, palette.data(), palette.size());
+}
+
+void PictureBus::load_state(const char *buffer) {
+	ram.resize(*reinterpret_cast<const size_t *>(buffer));
+	buffer += sizeof(size_t);
+	memcpy(ram.data(), buffer, ram.size());
+	buffer += ram.size();
+	memcpy(name_tables, buffer, sizeof(name_tables));
+	buffer += sizeof(name_tables);
+	palette.resize(*reinterpret_cast<const size_t *>(buffer));
+	buffer += sizeof(size_t);
+	memcpy(palette.data(), buffer, palette.size());
 }
 
 }  // namespace NES

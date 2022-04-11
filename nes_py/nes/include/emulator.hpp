@@ -101,6 +101,14 @@ class Emulator {
         cpu = backup_cpu;
         ppu = backup_ppu;
     }
+
+    inline size_t state_size() noexcept {
+        return bus.state_size() + picture_bus.state_size() + cpu.state_size() + ppu.state_size();
+    }
+
+    void dump_state(char *buffer);
+
+    void load_state(const char *buffer);
 };
 
 }  // namespace NES

@@ -560,4 +560,40 @@ void CPU::cycle(MainBus &bus) {
         std::cout << "failed to execute opcode: " << std::hex << +op << std::endl;
 }
 
+void CPU::dump_state(char *buffer) {
+    *reinterpret_cast<decltype(register_PC)*>(buffer) = register_PC;
+    buffer += sizeof(register_PC);
+    *reinterpret_cast<decltype(register_SP)*>(buffer) = register_SP;
+    buffer += sizeof(register_SP);
+    *reinterpret_cast<decltype(register_A)*>(buffer) = register_A;
+    buffer += sizeof(register_A);
+    *reinterpret_cast<decltype(register_X)*>(buffer) = register_X;
+    buffer += sizeof(register_X);
+    *reinterpret_cast<decltype(register_Y)*>(buffer) = register_Y;
+    buffer += sizeof(register_Y);
+    *reinterpret_cast<decltype(flags)*>(buffer) = flags;
+    buffer += sizeof(flags);
+    *reinterpret_cast<decltype(skip_cycles)*>(buffer) = skip_cycles;
+    buffer += sizeof(skip_cycles);
+    *reinterpret_cast<decltype(cycles)*>(buffer) = cycles;
+}
+
+void CPU::load_state(const char *buffer) {
+    register_PC = *reinterpret_cast<const decltype(register_PC)*>(buffer);
+    buffer += sizeof(register_PC);
+    register_SP = *reinterpret_cast<const decltype(register_SP)*>(buffer);
+    buffer += sizeof(register_SP);
+    register_A = *reinterpret_cast<const decltype(register_A)*>(buffer);
+    buffer += sizeof(register_A);
+    register_X = *reinterpret_cast<const decltype(register_X)*>(buffer);
+    buffer += sizeof(register_X);
+    register_Y = *reinterpret_cast<const decltype(register_Y)*>(buffer);
+    buffer += sizeof(register_Y);
+    flags = *reinterpret_cast<const decltype(flags)*>(buffer);
+    buffer += sizeof(flags);
+    skip_cycles = *reinterpret_cast<const decltype(skip_cycles)*>(buffer);
+    buffer += sizeof(skip_cycles);
+    cycles = *reinterpret_cast<const decltype(cycles)*>(buffer);
+}
+
 }  // namespace NES

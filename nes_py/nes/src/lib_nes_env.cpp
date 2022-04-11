@@ -81,6 +81,18 @@ extern "C" {
     EXP void Close(NES::Emulator* emu) {
         delete emu;
     }
+
+    EXP size_t StateSize(NES::Emulator* emu) noexcept {
+        return emu->state_size();
+    }
+
+    EXP void DumpState(NES::Emulator* emu, void *buffer) {
+        emu->dump_state(reinterpret_cast<char *>(buffer));
+    }
+
+     EXP void LoadState(NES::Emulator* emu, const void *buffer) {
+        emu->load_state(reinterpret_cast<const char *>(buffer));
+    }
 }
 
 // un-define the macro

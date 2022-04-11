@@ -50,4 +50,24 @@ void Emulator::step() {
     }
 }
 
+void Emulator::dump_state(char *buffer) {
+    bus.dump_state(buffer);
+    buffer += bus.state_size();
+    picture_bus.dump_state(buffer);
+    buffer += picture_bus.state_size();
+    cpu.dump_state(buffer);
+    buffer += cpu.state_size();
+    ppu.dump_state(buffer);
+}
+
+void Emulator::load_state(const char *buffer) {
+    bus.load_state(buffer);
+    buffer += bus.state_size();
+    picture_bus.load_state(buffer);
+    buffer += picture_bus.state_size();
+    cpu.load_state(buffer);
+    buffer += cpu.state_size();
+    ppu.load_state(buffer);
+}
+
 }  // namespace NES

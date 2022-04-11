@@ -5,6 +5,8 @@
 //  Copyright (c) 2019 Christian Kauten. All rights reserved.
 //
 
+#include <cstring>
+
 #include "main_bus.hpp"
 #include "log.hpp"
 
@@ -89,6 +91,26 @@ void MainBus::set_mapper(Mapper* mapper) {
     this->mapper = mapper;
     if (mapper->hasExtendedRAM())
         extended_ram.resize(0x2000);
+}
+
+void MainBus::dump_state(char *buffer) {
+	*reinterpret_cast<size_t *>(buffer) = ram.size();
+	buffer += sizeof(size_t);
+	memcpy(buffer, ram.data(), ram.size());
+	buffer += ram.size();
+	*reinterpret_cast<size_t *>(buffer) = extended_ram.size();
+	buffer += sizeof(size_t);
+	memcpy(buffer, extended_ram.data(), extended_ram.size());
+}
+
+void MainBus::load_state(const char *buffer) {
+	ram.resize(*reinterpret_cast<const size_t *>(buffer));
+	buffer += sizeof(size_t);
+	memcpy(ram.data(), buffer, ram.size());
+	buffer += ram.size();
+	extended_ram.resize(*reinterpret_cast<const size_t *>(buffer));
+	buffer += sizeof(size_t);
+	memcpy(extended_ram.data(), buffer, extended_ram.size());
 }
 
 }  // namespace NES

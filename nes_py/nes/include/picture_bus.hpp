@@ -66,6 +66,14 @@ class PictureBus {
 
     /// Update the mirroring and name table from the mapper.
     void update_mirroring();
+
+    inline size_t state_size() noexcept {
+        return ram.size() + sizeof(name_tables) + palette.size() + 2 * sizeof(size_t);
+    }
+
+    void dump_state(char *buffer);
+
+    void load_state(const char *buffer);
 };
 
 }  // namespace NES

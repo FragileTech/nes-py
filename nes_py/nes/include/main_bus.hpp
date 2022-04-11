@@ -103,6 +103,14 @@ class MainBus {
 
     /// Return a pointer to the page in memory.
     const NES_Byte* get_page_pointer(NES_Byte page);
+
+    inline size_t state_size() noexcept {
+        return ram.size() + extended_ram.size() + 2 * sizeof(size_t);
+    }
+
+    void dump_state(char *buffer);
+
+    void load_state(const char *buffer);
 };
 
 }  // namespace NES

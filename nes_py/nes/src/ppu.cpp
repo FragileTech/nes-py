@@ -367,4 +367,116 @@ void PPU::set_scroll(NES_Byte scroll) {
     }
 }
 
+void PPU::dump_state(char *buffer) {
+    *reinterpret_cast<size_t *>(buffer) = sprite_memory.size();
+    buffer += sizeof(size_t);
+    memcpy(buffer, sprite_memory.data(), sprite_memory.size());
+    buffer += sprite_memory.size();
+    *reinterpret_cast<size_t *>(buffer) = scanline_sprites.size();
+    buffer += sizeof(size_t);
+    memcpy(buffer, scanline_sprites.data(), scanline_sprites.size());
+    buffer += scanline_sprites.size();
+
+    *reinterpret_cast<decltype(pipeline_state)*>(buffer) = pipeline_state;
+    buffer += sizeof(pipeline_state);
+    *reinterpret_cast<decltype(cycles)*>(buffer) = cycles;
+    buffer += sizeof(cycles);
+    *reinterpret_cast<decltype(scanline)*>(buffer) = scanline;
+    buffer += sizeof(scanline);
+    *reinterpret_cast<decltype(is_even_frame)*>(buffer) = is_even_frame;
+    buffer += sizeof(is_even_frame);
+    *reinterpret_cast<decltype(is_vblank)*>(buffer) = is_vblank;
+    buffer += sizeof(is_vblank);
+    *reinterpret_cast<decltype(is_sprite_zero_hit)*>(buffer) = is_sprite_zero_hit;
+    buffer += sizeof(is_sprite_zero_hit);
+    *reinterpret_cast<decltype(data_address)*>(buffer) = data_address;
+    buffer += sizeof(data_address);
+    *reinterpret_cast<decltype(temp_address)*>(buffer) = temp_address;
+    buffer += sizeof(temp_address);
+    *reinterpret_cast<decltype(fine_x_scroll)*>(buffer) = fine_x_scroll;
+    buffer += sizeof(fine_x_scroll);
+    *reinterpret_cast<decltype(is_first_write)*>(buffer) = is_first_write;
+    buffer += sizeof(is_first_write);
+    *reinterpret_cast<decltype(data_buffer)*>(buffer) = data_buffer;
+    buffer += sizeof(data_buffer);
+    *reinterpret_cast<decltype(sprite_data_address)*>(buffer) = sprite_data_address;
+    buffer += sizeof(sprite_data_address);
+    *reinterpret_cast<decltype(is_showing_sprites)*>(buffer) = is_showing_sprites;
+    buffer += sizeof(is_showing_sprites);
+    *reinterpret_cast<decltype(is_showing_background)*>(buffer) = is_showing_background;
+    buffer += sizeof(is_showing_background);
+    *reinterpret_cast<decltype(is_hiding_edge_sprites)*>(buffer) = is_hiding_edge_sprites;
+    buffer += sizeof(is_hiding_edge_sprites);
+    *reinterpret_cast<decltype(is_hiding_edge_background)*>(buffer) = is_hiding_edge_background;
+    buffer += sizeof(is_hiding_edge_background);
+    *reinterpret_cast<decltype(is_long_sprites)*>(buffer) = is_long_sprites;
+    buffer += sizeof(is_long_sprites);
+    *reinterpret_cast<decltype(is_interrupting)*>(buffer) = is_interrupting;
+    buffer += sizeof(is_interrupting);
+    *reinterpret_cast<decltype(background_page)*>(buffer) = background_page;
+    buffer += sizeof(background_page);
+    *reinterpret_cast<decltype(sprite_page)*>(buffer) = sprite_page;
+    buffer += sizeof(sprite_page);
+    *reinterpret_cast<decltype(data_address_increment)*>(buffer) = data_address_increment;
+    buffer += sizeof(data_address_increment);
+
+    memcpy(buffer, screen, sizeof(screen));
+}
+
+void PPU::load_state(const char *buffer) {
+    sprite_memory.resize(*reinterpret_cast<const size_t *>(buffer));
+    buffer += sizeof(size_t);
+    memcpy(sprite_memory.data(), buffer, sprite_memory.size());
+    buffer += sprite_memory.size();
+    scanline_sprites.resize(*reinterpret_cast<const size_t *>(buffer));
+    buffer += sizeof(size_t);
+    memcpy(scanline_sprites.data(), buffer, scanline_sprites.size());
+    buffer += scanline_sprites.size();
+
+    pipeline_state = *reinterpret_cast<const decltype(pipeline_state)*>(buffer);
+    buffer += sizeof(pipeline_state);
+    cycles = *reinterpret_cast<const decltype(cycles)*>(buffer);
+    buffer += sizeof(cycles);
+    scanline = *reinterpret_cast<const decltype(scanline)*>(buffer);
+    buffer += sizeof(scanline);
+    is_even_frame = *reinterpret_cast<const decltype(is_even_frame)*>(buffer);
+    buffer += sizeof(is_even_frame);
+    is_vblank = *reinterpret_cast<const decltype(is_vblank)*>(buffer);
+    buffer += sizeof(is_vblank);
+    is_sprite_zero_hit = *reinterpret_cast<const decltype(is_sprite_zero_hit)*>(buffer);
+    buffer += sizeof(is_sprite_zero_hit);
+    data_address = *reinterpret_cast<const decltype(data_address)*>(buffer);
+    buffer += sizeof(data_address);
+    temp_address = *reinterpret_cast<const decltype(temp_address)*>(buffer);
+    buffer += sizeof(temp_address);
+    fine_x_scroll = *reinterpret_cast<const decltype(fine_x_scroll)*>(buffer);
+    buffer += sizeof(fine_x_scroll);
+    is_first_write = *reinterpret_cast<const decltype(is_first_write)*>(buffer);
+    buffer += sizeof(is_first_write);
+    data_buffer = *reinterpret_cast<const decltype(data_buffer)*>(buffer);
+    buffer += sizeof(data_buffer);
+    sprite_data_address = *reinterpret_cast<const decltype(sprite_data_address)*>(buffer);
+    buffer += sizeof(sprite_data_address);
+    is_showing_sprites = *reinterpret_cast<const decltype(is_showing_sprites)*>(buffer);
+    buffer += sizeof(is_showing_sprites);
+    is_showing_background = *reinterpret_cast<const decltype(is_showing_background)*>(buffer);
+    buffer += sizeof(is_showing_background);
+    is_hiding_edge_sprites = *reinterpret_cast<const decltype(is_hiding_edge_sprites)*>(buffer);
+    buffer += sizeof(is_hiding_edge_sprites);
+    is_hiding_edge_background = *reinterpret_cast<const decltype(is_hiding_edge_background)*>(buffer);
+    buffer += sizeof(is_hiding_edge_background);
+    is_long_sprites = *reinterpret_cast<const decltype(is_long_sprites)*>(buffer);
+    buffer += sizeof(is_long_sprites);
+    is_interrupting = *reinterpret_cast<const decltype(is_interrupting)*>(buffer);
+    buffer += sizeof(is_interrupting);
+    background_page = *reinterpret_cast<const decltype(background_page)*>(buffer);
+    buffer += sizeof(background_page);
+    sprite_page = *reinterpret_cast<const decltype(sprite_page)*>(buffer);
+    buffer += sizeof(sprite_page);
+    data_address_increment = *reinterpret_cast<const decltype(data_address_increment)*>(buffer);
+    buffer += sizeof(data_address_increment);
+
+    memcpy(screen, buffer, sizeof(screen));
+}
+
 }  // namespace NES

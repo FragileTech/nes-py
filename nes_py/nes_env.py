@@ -59,6 +59,13 @@ _LIB.Restore.restype = None
 _LIB.Close.argtypes = [ctypes.c_void_p]
 _LIB.Close.restype = None
 
+_LIB.StateSize.argtypes = [ctypes.c_void_p]
+_LIB.StateSize.restype = ctypes.c_size_t
+_LIB.DumpState.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
+_LIB.DumpState.restype = None
+_LIB.LoadState.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
+_LIB.LoadState.restype = None
+
 
 # height in pixels of the NES screen
 SCREEN_HEIGHT = _LIB.Height()
@@ -417,6 +424,17 @@ class NESEnv(gym.Env):
     def get_action_meanings(self):
         """Return a list of actions meanings."""
         return ['NOOP']
+
+    @property
+    def state(self) -> np.ndarray:
+        arr = np.empty(_LIB.StateSize(self._env), dtype=np.byte)
+        _LIB.DumpState(self._env, arr.ctypes.data)
+        return arr
+
+    @state.setter
+    def state(self, arr: np.ndarray) -> None:
+        assert arr.nbytes == _LIB.StateSize(self._env)
+        _LIB.LoadState(self._env, arr.ctypes.data)
 
 
 # explicitly define the outward facing API of this module

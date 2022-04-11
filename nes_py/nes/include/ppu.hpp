@@ -182,6 +182,22 @@ class PPU {
 
     /// Return a pointer to the screen buffer.
     inline NES_Pixel* get_screen_buffer() { return *screen; }
+
+    inline size_t state_size() noexcept {
+        return sprite_memory.size() + scanline_sprites.size() + 2 * sizeof(size_t)
+            + sizeof(pipeline_state) + sizeof(cycles) + sizeof(scanline) + sizeof(is_even_frame)
+            + sizeof(is_vblank) + sizeof(is_sprite_zero_hit) + sizeof(data_address)
+            + sizeof(temp_address) + sizeof(fine_x_scroll) + sizeof(is_first_write)
+            + sizeof(data_buffer) + sizeof(sprite_data_address) + sizeof(is_showing_sprites)
+            + sizeof(is_showing_background) + sizeof(is_hiding_edge_sprites)
+            + sizeof(is_hiding_edge_background) + sizeof(is_long_sprites)
+            + sizeof(is_interrupting) + sizeof(background_page) + sizeof(sprite_page)
+            + sizeof(data_address_increment) + sizeof(screen);
+    }
+
+    void dump_state(char *buffer);
+
+    void load_state(const char *buffer);
 };
 
 }  // namespace NES
