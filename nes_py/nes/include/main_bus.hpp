@@ -105,7 +105,7 @@ class MainBus {
     const NES_Byte* get_page_pointer(NES_Byte page);
 
     inline size_t state_size() noexcept {
-        return ram.size() + extended_ram.size() + 2 * sizeof(size_t);
+        return ram.size() + extended_ram.size() + 2 * sizeof(size_t) + mapper->state_size();
     }
 
     void dump_state(char *buffer);

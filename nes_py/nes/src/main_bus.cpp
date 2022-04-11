@@ -101,6 +101,9 @@ void MainBus::dump_state(char *buffer) {
 	*reinterpret_cast<size_t *>(buffer) = extended_ram.size();
 	buffer += sizeof(size_t);
 	memcpy(buffer, extended_ram.data(), extended_ram.size());
+	buffer += extended_ram.size();
+
+	mapper->dump_state(buffer);
 }
 
 void MainBus::load_state(const char *buffer) {
@@ -111,6 +114,9 @@ void MainBus::load_state(const char *buffer) {
 	extended_ram.resize(*reinterpret_cast<const size_t *>(buffer));
 	buffer += sizeof(size_t);
 	memcpy(extended_ram.data(), buffer, extended_ram.size());
+	buffer += extended_ram.size();
+
+	mapper->load_state(buffer);
 }
 
 }  // namespace NES

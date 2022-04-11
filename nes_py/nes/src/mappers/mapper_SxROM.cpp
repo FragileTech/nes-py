@@ -5,6 +5,8 @@
 //  Copyright (c) 2019 Christian Kauten. All rights reserved.
 //
 
+#include <cstring>
+
 #include "mappers/mapper_SxROM.hpp"
 #include "log.hpp"
 
@@ -116,6 +118,64 @@ void MapperSxROM::writeCHR(NES_Address address, NES_Byte value) {
         character_ram[address] = value;
     else
         LOG(Info) << "Read-only CHR memory write attempt at " << std::hex << address << std::endl;
+}
+
+void MapperSxROM::dump_state(char *buffer) {
+    *reinterpret_cast<size_t*>(buffer) = character_ram.size();
+    buffer += sizeof(size_t);
+    memcpy(buffer, character_ram.data(), character_ram.size());
+    buffer += character_ram.size();
+
+    *reinterpret_cast<decltype(mode_chr)*>(buffer) = mode_chr;
+    buffer += sizeof(mode_chr);
+    *reinterpret_cast<decltype(mode_prg)*>(buffer) = mode_prg;
+    buffer += sizeof(mode_prg);
+    *reinterpret_cast<decltype(temp_register)*>(buffer) = temp_register;
+    buffer += sizeof(temp_register);
+    *reinterpret_cast<decltype(write_counter)*>(buffer) = write_counter;
+    buffer += sizeof(write_counter);
+    *reinterpret_cast<decltype(register_prg)*>(buffer) = register_prg;
+    buffer += sizeof(register_prg);
+    *reinterpret_cast<decltype(register_chr0)*>(buffer) = register_chr0;
+    buffer += sizeof(register_chr0);
+    *reinterpret_cast<decltype(register_chr1)*>(buffer) = register_chr1;
+    buffer += sizeof(register_chr1);
+    *reinterpret_cast<decltype(first_bank_prg)*>(buffer) = first_bank_prg;
+    buffer += sizeof(first_bank_prg);
+    *reinterpret_cast<decltype(second_bank_prg)*>(buffer) = second_bank_prg;
+    buffer += sizeof(second_bank_prg);
+    *reinterpret_cast<decltype(first_bank_chr)*>(buffer) = first_bank_chr;
+    buffer += sizeof(first_bank_chr);
+    *reinterpret_cast<decltype(second_bank_chr)*>(buffer) = second_bank_chr;
+}
+
+void MapperSxROM::load_state(const char *buffer) {
+    character_ram.resize(*reinterpret_cast<const  size_t*>(buffer));
+    buffer += sizeof(size_t);
+    memcpy(character_ram.data(), buffer, character_ram.size());
+    buffer += character_ram.size();
+
+    mode_chr = *reinterpret_cast<const decltype(mode_chr)*>(buffer);
+    buffer += sizeof(mode_chr);
+    mode_prg = *reinterpret_cast<const decltype(mode_prg)*>(buffer);
+    buffer += sizeof(mode_prg);
+    temp_register = *reinterpret_cast<const decltype(temp_register)*>(buffer);
+    buffer += sizeof(temp_register);
+    write_counter = *reinterpret_cast<const decltype(write_counter)*>(buffer);
+    buffer += sizeof(write_counter);
+    register_prg = *reinterpret_cast<const decltype(register_prg)*>(buffer);
+    buffer += sizeof(register_prg);
+    register_chr0 = *reinterpret_cast<const decltype(register_chr0)*>(buffer);
+    buffer += sizeof(register_chr0);
+    register_chr1 = *reinterpret_cast<const decltype(register_chr1)*>(buffer);
+    buffer += sizeof(register_chr1);
+    first_bank_prg = *reinterpret_cast<const decltype(first_bank_prg)*>(buffer);
+    buffer += sizeof(first_bank_prg);
+    second_bank_prg = *reinterpret_cast<const decltype(second_bank_prg)*>(buffer);
+    buffer += sizeof(second_bank_prg);
+    first_bank_chr = *reinterpret_cast<const decltype(first_bank_chr)*>(buffer);
+    buffer += sizeof(first_bank_chr);
+    second_bank_chr = *reinterpret_cast<const decltype(second_bank_chr)*>(buffer);
 }
 
 }  // namespace NES

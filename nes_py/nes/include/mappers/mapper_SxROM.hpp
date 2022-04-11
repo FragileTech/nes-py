@@ -100,6 +100,16 @@ class MapperSxROM : public Mapper {
 
     /// Return the name table mirroring mode of this mapper.
     inline NameTableMirroring getNameTableMirroring() { return mirroring; }
+
+    inline size_t state_size() noexcept final {
+        return character_ram.size() + sizeof(size_t) + sizeof(mode_chr) + sizeof(mode_prg)
+            + sizeof(temp_register) + sizeof(write_counter) + 3 * sizeof(NES_Byte)
+            + 4 * sizeof(size_t);
+    }
+
+    void dump_state(char *buffer) final;
+
+    void load_state(const char *buffer) final;
 };
 
 }  // namespace NES

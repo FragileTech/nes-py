@@ -67,6 +67,14 @@ class MapperNROM : public Mapper {
     /// @param value the byte to write to the given address
     ///
     void writeCHR(NES_Address address, NES_Byte value);
+
+    inline size_t state_size() noexcept final {
+        return character_ram.size() + sizeof(size_t);
+    }
+
+    void dump_state(char *buffer) final;
+
+    void load_state(const char *buffer) final;
 };
 
 }  // namespace NES

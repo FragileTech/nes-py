@@ -66,6 +66,18 @@ class MapperCNROM : public Mapper {
     /// @param value the byte to write to the given address
     ///
     void writeCHR(NES_Address address, NES_Byte value);
+
+    inline size_t state_size() noexcept final {
+        return sizeof(select_chr);
+    }
+
+    inline void dump_state(char *buffer) final {
+        *reinterpret_cast<decltype(select_chr)*>(buffer) = select_chr;
+    }
+
+    inline void load_state(const char *buffer) final {
+        select_chr = *reinterpret_cast<const decltype(select_chr)*>(buffer);
+    }
 };
 
 }  // namespace NES

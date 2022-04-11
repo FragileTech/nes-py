@@ -71,6 +71,12 @@ class Mapper {
     /// @param value the byte to write to the given address
     ///
     virtual void writeCHR(NES_Address address, NES_Byte value) = 0;
+
+    virtual size_t state_size() noexcept = 0;
+
+    virtual void dump_state(char *buffer) = 0;
+
+    virtual void load_state(const char *buffer) = 0;
 };
 
 }  // namespace NES
