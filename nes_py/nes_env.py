@@ -425,8 +425,7 @@ class NESEnv(gym.Env):
         """Return a list of actions meanings."""
         return ['NOOP']
 
-    @property
-    def state(self) -> np.ndarray:
+    def get_state(self) -> np.ndarray:
         arr = np.empty(_LIB.StateSize(self._env), dtype=np.byte)
         _LIB.DumpState(self._env, arr.ctypes.data)
         return arr
