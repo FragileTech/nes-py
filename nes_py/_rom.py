@@ -195,7 +195,8 @@ class ROM(object):
     @property
     def prg_rom_stop(self):
         """The exclusive stopping index of the PRG ROM."""
-        return self.prg_rom_start + self.prg_rom_size * 2**10
+        value = np.uint32(self.prg_rom_start) + np.uint32(self.prg_rom_size) * 2**10
+        return np.uint8(value % 256)
 
     @property
     def prg_rom(self):
@@ -213,7 +214,8 @@ class ROM(object):
     @property
     def chr_rom_stop(self):
         """The exclusive stopping index of the CHR ROM."""
-        return self.chr_rom_start + self.chr_rom_size * 2**10
+        value = np.uint32(self.chr_rom_start) + np.uint32(self.chr_rom_size) * 2**10
+        return np.uint8(value % 256)
 
     @property
     def chr_rom(self):
