@@ -27,16 +27,16 @@ class ROM(object):
         """
         # make sure the rom path is a string
         if not isinstance(rom_path, str):
-            raise TypeError('rom_path must be of type: str.')
+            raise TypeError("rom_path must be of type: str.")
         # make sure the rom path exists
         if not os.path.exists(rom_path):
-            msg = 'rom_path points to non-existent file: {}.'.format(rom_path)
+            msg = "rom_path points to non-existent file: {}.".format(rom_path)
             raise ValueError(msg)
         # read the binary data in the .nes ROM file
-        self.raw_data = np.fromfile(rom_path, dtype='uint8')
+        self.raw_data = np.fromfile(rom_path, dtype="uint8")
         # ensure the first 4 bytes are 0x4E45531A (NES<EOF>)
         if not np.array_equal(self._magic, self._MAGIC):
-            raise ValueError('ROM missing magic number in header.')
+            raise ValueError("ROM missing magic number in header.")
         if self._zero_fill != 0:
             raise ValueError("ROM header zero fill bytes are not zero.")
 
@@ -67,12 +67,12 @@ class ROM(object):
     @property
     def flags_6(self):
         """Return the flags at the 6th byte of the header."""
-        return '{:08b}'.format(self.header[6])
+        return "{:08b}".format(self.header[6])
 
     @property
     def flags_7(self):
         """Return the flags at the 7th byte of the header."""
-        return '{:08b}'.format(self.header[7])
+        return "{:08b}".format(self.header[7])
 
     @property
     def prg_ram_size(self):
@@ -87,7 +87,7 @@ class ROM(object):
     @property
     def flags_9(self):
         """Return the flags at the 9th byte of the header."""
-        return '{:08b}'.format(self.header[9])
+        return "{:08b}".format(self.header[9])
 
     @property
     def flags_10(self):
@@ -99,7 +99,7 @@ class ROM(object):
             - ignored in this emulator
 
         """
-        return '{:08b}'.format(self.header[10])
+        return "{:08b}".format(self.header[10])
 
     @property
     def _zero_fill(self):
@@ -185,7 +185,7 @@ class ROM(object):
     @property
     def trainer_rom(self):
         """Return the trainer ROM of the ROM file."""
-        return self.raw_data[self.trainer_rom_start:self.trainer_rom_stop]
+        return self.raw_data[self.trainer_rom_start : self.trainer_rom_stop]
 
     @property
     def prg_rom_start(self):
@@ -201,9 +201,9 @@ class ROM(object):
     def prg_rom(self):
         """Return the PRG ROM of the ROM file."""
         try:
-            return self.raw_data[self.prg_rom_start:self.prg_rom_stop]
+            return self.raw_data[self.prg_rom_start : self.prg_rom_stop]
         except IndexError:
-            raise ValueError('failed to read PRG-ROM on ROM.')
+            raise ValueError("failed to read PRG-ROM on ROM.")
 
     @property
     def chr_rom_start(self):
@@ -219,9 +219,9 @@ class ROM(object):
     def chr_rom(self):
         """Return the CHR ROM of the ROM file."""
         try:
-            return self.raw_data[self.chr_rom_start:self.chr_rom_stop]
+            return self.raw_data[self.chr_rom_start : self.chr_rom_stop]
         except IndexError:
-            raise ValueError('failed to read CHR-ROM on ROM.')
+            raise ValueError("failed to read CHR-ROM on ROM.")
 
 
 # explicitly define the outward facing API of this module

@@ -16,7 +16,7 @@ def rom_file_abs_path(file_name):
     # the directory of this file
     dir_path = os.path.dirname(os.path.realpath(__file__))
     # the absolute path to the given ROM file
-    game_path = '{}/games/{}'.format(dir_path, file_name)
+    game_path = "{}/games/{}".format(dir_path, file_name)
 
     return game_path
 

@@ -17,12 +17,12 @@ class ShouldNotCreateInstanceOfROMWithoutPath(TestCase):
 class ShouldNotCreateInstanceOfROMWithInvaldPath(TestCase):
     def test(self):
         self.assertRaises(TypeError, lambda: ROM(5))
-        self.assertRaises(ValueError, lambda: ROM('not a path'))
+        self.assertRaises(ValueError, lambda: ROM("not a path"))
 
 
 class ShouldNotCreateInstanceOfROMWithInvaldROMFile(TestCase):
     def test(self):
-        empty = rom_file_abs_path('empty.nes')
+        empty = rom_file_abs_path("empty.nes")
         self.assertRaises(ValueError, lambda: ROM(empty))
 
 
@@ -168,7 +168,7 @@ class ShouldReadROMHeaderTestCase(object):
 
     def test_prg_rom(self):
         """Check the  PRG ROM."""
-        size = (self.prg_rom_stop - self.prg_rom_start)
+        size = self.prg_rom_stop - self.prg_rom_start
         self.assertEqual(size, len(self.rom.prg_rom))
 
     def test_chr_rom_start(self):
@@ -181,14 +181,14 @@ class ShouldReadROMHeaderTestCase(object):
 
     def test_chr_rom(self):
         """Check the CHR ROM."""
-        size = (self.chr_rom_stop - self.chr_rom_start)
+        size = self.chr_rom_stop - self.chr_rom_start
         self.assertEqual(size, len(self.rom.chr_rom))
 
 
 class ShouldReadSuperMarioBros(ShouldReadROMHeaderTestCase, TestCase):
     """Check the Super Mario Bros 1 ROM."""
 
-    rom_name = 'super-mario-bros-1.nes'
+    rom_name = "super-mario-bros-1.nes"
     prg_rom_size = 32
     chr_rom_size = 8
     prg_ram_size = 8
@@ -211,7 +211,7 @@ class ShouldReadSuperMarioBros(ShouldReadROMHeaderTestCase, TestCase):
 class ShouldReadSMBLostLevels(ShouldReadROMHeaderTestCase, TestCase):
     """Check the Super Mario Bros Lost Levels ROM."""
 
-    rom_name = 'super-mario-bros-lost-levels.nes'
+    rom_name = "super-mario-bros-lost-levels.nes"
     prg_rom_size = 32
     chr_rom_size = 8
     prg_ram_size = 8
@@ -234,7 +234,7 @@ class ShouldReadSMBLostLevels(ShouldReadROMHeaderTestCase, TestCase):
 class ShouldReadSuperMarioBros2(ShouldReadROMHeaderTestCase, TestCase):
     """Check the Super Mario Bros 2 ROM."""
 
-    rom_name = 'super-mario-bros-2.nes'
+    rom_name = "super-mario-bros-2.nes"
     prg_rom_size = 128
     chr_rom_size = 128
     prg_ram_size = 8
@@ -257,7 +257,7 @@ class ShouldReadSuperMarioBros2(ShouldReadROMHeaderTestCase, TestCase):
 class ShouldReadSuperMarioBros3(ShouldReadROMHeaderTestCase, TestCase):
     """Check the Super Mario Bros 3 ROM."""
 
-    rom_name = 'super-mario-bros-3.nes'
+    rom_name = "super-mario-bros-3.nes"
     prg_rom_size = 256
     chr_rom_size = 128
     prg_ram_size = 8
@@ -280,7 +280,7 @@ class ShouldReadSuperMarioBros3(ShouldReadROMHeaderTestCase, TestCase):
 class ShouldReadExcitebike(ShouldReadROMHeaderTestCase, TestCase):
     """Check the Excitebike ROM."""
 
-    rom_name = 'excitebike.nes'
+    rom_name = "excitebike.nes"
     prg_rom_size = 16
     chr_rom_size = 8
     prg_ram_size = 8
@@ -303,7 +303,7 @@ class ShouldReadExcitebike(ShouldReadROMHeaderTestCase, TestCase):
 class ShouldReadLegendOfZelda(ShouldReadROMHeaderTestCase, TestCase):
     """Check The Legend Of Zelda ROM."""
 
-    rom_name = 'the-legend-of-zelda.nes'
+    rom_name = "the-legend-of-zelda.nes"
     prg_rom_size = 128
     chr_rom_size = 0
     prg_ram_size = 8

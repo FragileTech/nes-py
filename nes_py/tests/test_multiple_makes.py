@@ -18,7 +18,7 @@ def play(steps):
 
     """
     # create an NES environment with Super Mario Bros.
-    path = rom_file_abs_path('super-mario-bros-1.nes')
+    path = rom_file_abs_path("super-mario-bros-1.nes")
     env = NESEnv(path)
     # step the environment for some arbitrary number of steps
     done = True
@@ -45,7 +45,7 @@ class ShouldMakeMultipleEnvironmentsParallel(object):
 
     def test(self):
         procs = [None] * self.num_execs
-        args = (self.steps, )
+        args = (self.steps,)
         # spawn the parallel instances
         for idx in range(self.num_execs):
             procs[idx] = self.parallel_initializer(target=play, args=args)
@@ -57,11 +57,13 @@ class ShouldMakeMultipleEnvironmentsParallel(object):
 
 class ProcessTest(ShouldMakeMultipleEnvironmentsParallel, TestCase):
     """Test that processes (true multi-threading) work."""
+
     parallel_initializer = Process
 
 
 class ThreadTest(ShouldMakeMultipleEnvironmentsParallel, TestCase):
     """Test that threads (internal parallelism) work"""
+
     parallel_initializer = Thread
 
 
@@ -75,7 +77,7 @@ class ShouldMakeMultipleEnvironmentsSingleThread(TestCase):
     steps = 10
 
     def test(self):
-        path = rom_file_abs_path('super-mario-bros-1.nes')
+        path = rom_file_abs_path("super-mario-bros-1.nes")
         envs = [NESEnv(path) for _ in range(self.num_envs)]
         dones = [True] * self.num_envs
 

@@ -29,24 +29,24 @@ def play_human(env: gym.Env, callback=None):
     is_rgb = len(obs_s.shape) == 3 and obs_s.shape[2] in [1, 3]
     assert is_bw or is_rgb
     # get the mapping of keyboard keys to actions in the environment
-    if hasattr(env, 'get_keys_to_action'):
+    if hasattr(env, "get_keys_to_action"):
         keys_to_action = env.get_keys_to_action()
-    elif hasattr(env.unwrapped, 'get_keys_to_action'):
+    elif hasattr(env.unwrapped, "get_keys_to_action"):
         keys_to_action = env.unwrapped.get_keys_to_action()
     else:
-        raise ValueError('env has no get_keys_to_action method')
+        raise ValueError("env has no get_keys_to_action method")
     # create the image viewer
     viewer = ImageViewer(
         env.spec.id if env.spec is not None else env.__class__.__name__,
-        env.observation_space.shape[0], # height
-        env.observation_space.shape[1], # width
+        env.observation_space.shape[0],  # height
+        env.observation_space.shape[1],  # width
         monitor_keyboard=True,
-        relevant_keys=set(sum(map(list, keys_to_action.keys()), []))
+        relevant_keys=set(sum(map(list, keys_to_action.keys()), [])),
     )
     # create a done flag for the environment
     done = True
     # prepare frame rate limiting
-    target_frame_duration = 1 / env.metadata['video.frames_per_second']
+    target_frame_duration = 1 / env.metadata["video.frames_per_second"]
     last_frame_time = 0
     # start the main game loop
     try:

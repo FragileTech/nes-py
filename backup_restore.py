@@ -1,6 +1,7 @@
 from nes_py import NESEnv
 import tqdm
-env = NESEnv('./nes_py/tests/games/super-mario-bros-1.nes')
+
+env = NESEnv("./nes_py/tests/games/super-mario-bros-1.nes")
 
 done = True
 

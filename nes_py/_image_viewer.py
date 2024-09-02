@@ -4,10 +4,7 @@
 class ImageViewer(object):
     """A simple class for viewing images using pyglet."""
 
-    def __init__(self, caption, height, width,
-        monitor_keyboard=False,
-        relevant_keys=None
-    ):
+    def __init__(self, caption, height, width, monitor_keyboard=False, relevant_keys=None):
         """
         Initialize a new image viewer.
 
@@ -23,17 +20,19 @@ class ImageViewer(object):
         """
         # detect if rendering from python threads and fail
         import threading
+
         if threading.current_thread() is not threading.main_thread():
-            msg = 'rendering from python threads is not supported'
+            msg = "rendering from python threads is not supported"
             raise RuntimeError(msg)
         # import pyglet within class scope to resolve issues with how pyglet
         # interacts with OpenGL while using multiprocessing
         import pyglet
+
         self.pyglet = pyglet
         # a mapping from pyglet key identifiers to native identifiers
         self.KEY_MAP = {
-            self.pyglet.window.key.ENTER: ord('\r'),
-            self.pyglet.window.key.SPACE: ord(' '),
+            self.pyglet.window.key.ENTER: ord("\r"),
+            self.pyglet.window.key.SPACE: ord(" "),
         }
         self.caption = caption
         self.height = height
@@ -128,7 +127,7 @@ class ImageViewer(object):
         """
         # check that the frame has the correct dimensions
         if len(frame.shape) != 3:
-            raise ValueError('frame should have shape with only 3 dimensions')
+            raise ValueError("frame should have shape with only 3 dimensions")
         # open the window if it isn't open already
         if not self.is_open:
             self.open()
@@ -138,11 +137,7 @@ class ImageViewer(object):
         self._window.dispatch_events()
         # create an image data object
         image = self.pyglet.image.ImageData(
-            frame.shape[1],
-            frame.shape[0],
-            'RGB',
-            frame.tobytes(),
-            pitch=frame.shape[1]*-3
+            frame.shape[1], frame.shape[0], "RGB", frame.tobytes(), pitch=frame.shape[1] * -3
         )
         # send the image to the window
         image.blit(0, 0, width=self._window.width, height=self._window.height)

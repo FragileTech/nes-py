@@ -13,41 +13,41 @@ class ShouldRaiseTypeErrorOnInvalidROMPathType(TestCase):
 
 class ShouldRaiseValueErrorOnMissingNonexistentROMFile(TestCase):
     def test(self):
-        path = rom_file_abs_path('missing.nes')
+        path = rom_file_abs_path("missing.nes")
         self.assertRaises(ValueError, NESEnv, path)
 
 
 class ShouldRaiseValueErrorOnNonexistentFile(TestCase):
     def test(self):
-        self.assertRaises(ValueError, NESEnv, 'not_a_file.nes')
+        self.assertRaises(ValueError, NESEnv, "not_a_file.nes")
 
 
 class ShouldRaiseValueErrorOnNoniNES_ROMPath(TestCase):
     def test(self):
-        self.assertRaises(ValueError, NESEnv, rom_file_abs_path('blank'))
+        self.assertRaises(ValueError, NESEnv, rom_file_abs_path("blank"))
 
 
 class ShouldRaiseValueErrorOnInvalidiNES_ROMPath(TestCase):
     def test(self):
-        self.assertRaises(ValueError, NESEnv, rom_file_abs_path('empty.nes'))
+        self.assertRaises(ValueError, NESEnv, rom_file_abs_path("empty.nes"))
 
 
 class ShouldRaiseErrorOnStepBeforeReset(TestCase):
     def test(self):
-        env = NESEnv(rom_file_abs_path('super-mario-bros-1.nes'))
+        env = NESEnv(rom_file_abs_path("super-mario-bros-1.nes"))
         self.assertRaises(ValueError, env.step, 0)
 
 
 class ShouldCreateInstanceOfNESEnv(TestCase):
     def test(self):
-        env = NESEnv(rom_file_abs_path('super-mario-bros-1.nes'))
+        env = NESEnv(rom_file_abs_path("super-mario-bros-1.nes"))
         self.assertIsInstance(env, gym.Env)
         env.close()
 
 
 def create_smb1_instance():
     """Return a new SMB1 instance."""
-    return NESEnv(rom_file_abs_path('super-mario-bros-1.nes'))
+    return NESEnv(rom_file_abs_path("super-mario-bros-1.nes"))
 
 
 class ShouldReadAndWriteMemory(TestCase):
@@ -95,7 +95,7 @@ class ShouldStepEnv(TestCase):
             self.assertIsInstance(done, bool)
             self.assertIsInstance(info, dict)
             # check the render output
-            render = env.render('rgb_array')
+            render = env.render("rgb_array")
             self.assertIsInstance(render, np.ndarray)
         env.reset()
         env.close()
