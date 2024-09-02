@@ -181,3 +181,6 @@ You can check the compatibility for each ROM in the following
 
 **This project is provided for educational purposes only. It is not
 affiliated with and has not been approved by Nintendo.**
+
+
+"controller.cpp", "cpu.cpp", "emulator.cpp", "lib_nes_env.cpp", "main_bus.cpp", "picture_bus.cpp", "ppu.cpp"

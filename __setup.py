@@ -37,7 +37,7 @@ LIB_NES_ENV = Extension(
 
 
 setup(
-    name="nes_py",
+    name="fragile_nes_py",
     version="10.0.0",
     description="An NES Emulator and OpenAI Gym interface",
     long_description=README,
@@ -62,7 +62,7 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: System :: Emulators",
     ],
-    url="https://github.com/Kautenja/nes-py",
+    url="https://github.com/FragileTech/nes-py",
     author="Christian Kauten",
     author_email="kautencreations@gmail.com",
     license="MIT",
@@ -70,7 +70,7 @@ setup(
     ext_modules=[LIB_NES_ENV],
     zip_safe=False,
     install_requires=[
-        "gym>=0.17.2",
+        "fragile-gym",
         "numpy>=1.18.5",
         "pyglet<=1.5.11,>=1.4.0",
         "tqdm>=4.48.2",

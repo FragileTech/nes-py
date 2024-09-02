@@ -1,0 +1,56 @@
+[project]
+name = "fragile_nes_py"
+version = "10.0.0"
+description = "An NES Emulator and OpenAI Gym interface"
+readme = "README.md"
+keywords = ["NES", "Emulator", "OpenAI-Gym"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: C++",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Topic :: Games/Entertainment",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Emulators",
+]
+authors = [{ name = "Christian Kauten", email = "kautencreations@gmail.com" }]
+license = { text = "MIT" }
+dependencies = [
+    "fragile-gym",
+    "numpy>=1.18.5",
+    "pyglet<=1.5.11,>=1.4.0",
+    "tqdm>=4.48.2",
+]
+urls = { "Homepage" = "https://github.com/FragileTech/nes-py" }
+
+[tool.rye]
+dev-dependencies = ["ruff"]
+#excluded-dependencies = ["gym"]
+universal = true
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+#[tool.setuptools.packages.find]
+#where = ["nes_py"]
+#include = ["nes_py*"]
+#exclude = ["tests", "*.tests", "*.tests.*"]
+
+[tool.setuptools]
+ext-modules = [
+    {name = "nes_py.lib_nes_env", sources = ['nes_py/nes/src/main_bus.cpp', 'nes_py/nes/src/cartridge.cpp', 'nes_py/nes/src/emulator.cpp', 'nes_py/nes/src/cpu.cpp', 'nes_py/nes/src/lib_nes_env.cpp', 'nes_py/nes/src/ppu.cpp', 'nes_py/nes/src/picture_bus.cpp', 'nes_py/nes/src/controller.cpp', 'nes_py/nes/src/mappers/mapper_NROM.cpp', 'nes_py/nes/src/mappers/mapper_UxROM.cpp', 'nes_py/nes/src/mappers/mapper_SxROM.cpp', 'nes_py/nes/src/mappers/mapper_CNROM.cpp'], include-dirs = ["nes_py/nes/include"],    extra-compile-args = ["-std=c++1y", "-march=native", "-pipe", "-O3"]    }
+]
+
+[project.scripts]
+nes_py = "nes_py.app.cli:main"
