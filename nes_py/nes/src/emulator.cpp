@@ -11,7 +11,10 @@
 
 namespace NES {
 
-Emulator::Emulator(std::string rom_path) {
+Emulator::Emulator(std::string rom_path, bool screen_in_state) {
+    // configure whether serialized states carry the screen frame buffer
+    ppu.set_screen_in_state(screen_in_state);
+    backup_ppu.set_screen_in_state(screen_in_state);
     // set the read callbacks
     bus.set_read_callback(PPUSTATUS, [&](void) { return ppu.get_status();          });
     bus.set_read_callback(PPUDATA,   [&](void) { return ppu.get_data(picture_bus); });

@@ -56,8 +56,15 @@ class Emulator {
     /// Initialize a new emulator with a path to a ROM file.
     ///
     /// @param rom_path the path to the ROM for the emulator to run
+    /// @param screen_in_state whether dump_state / load_state carry the
+    ///        screen frame buffer. The screen is redrawn from the rest of
+    ///        the state after stepping one frame, so excluding it (the
+    ///        default) shrinks states ~55x; opt in to keep the legacy
+    ///        format where a loaded state restores the exact screen without
+    ///        stepping. States are only compatible between emulators that
+    ///        agree on this setting.
     ///
-    explicit Emulator(std::string rom_path);
+    explicit Emulator(std::string rom_path, bool screen_in_state = false);
 
     /// Return a 32-bit pointer to the screen buffer's first address.
     ///
@@ -104,6 +111,14 @@ class Emulator {
 
     inline size_t state_size() noexcept {
         return bus.state_size() + picture_bus.state_size() + cpu.state_size() + ppu.state_size();
+    }
+
+    /// Upper bound on state_size(), constant for a given ROM. state_size()
+    /// varies by up to 8 bytes with the PPU's scanline sprite count; this
+    /// value is safe to use as a fixed row stride for batches of states.
+    inline size_t max_state_size() noexcept {
+        return bus.state_size() + picture_bus.state_size() + cpu.state_size()
+            + ppu.max_state_size();
     }
 
     void dump_state(char *buffer);

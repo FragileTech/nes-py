@@ -420,7 +420,8 @@ void PPU::dump_state(char *buffer) {
     *reinterpret_cast<decltype(data_address_increment)*>(buffer) = data_address_increment;
     buffer += sizeof(data_address_increment);
 
-    memcpy(buffer, screen, sizeof(screen));
+    if (screen_in_state)
+        memcpy(buffer, screen, sizeof(screen));
 }
 
 void PPU::load_state(const char *buffer) {
@@ -476,7 +477,8 @@ void PPU::load_state(const char *buffer) {
     data_address_increment = *reinterpret_cast<const decltype(data_address_increment)*>(buffer);
     buffer += sizeof(data_address_increment);
 
-    memcpy(screen, buffer, sizeof(screen));
+    if (screen_in_state)
+        memcpy(screen, buffer, sizeof(screen));
 }
 
 }  // namespace NES

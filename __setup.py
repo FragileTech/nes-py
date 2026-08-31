@@ -26,13 +26,14 @@ SOURCES = glob("nes_py/nes/src/*.cpp") + glob("nes_py/nes/src/mappers/*.cpp")
 # headers with sdist
 INCLUDE_DIRS = ["nes_py/nes/include"]
 # Build arguments to pass to the compiler
-EXTRA_COMPILE_ARGS = ["-std=c++1y", "-march=native", "-pipe", "-O3"]
+EXTRA_COMPILE_ARGS = ["-std=c++1y", "-march=native", "-pipe", "-O3", "-pthread"]
 # The official extension using the name, source, headers, and build args
 LIB_NES_ENV = Extension(
     LIB_NAME,
     sources=SOURCES,
     include_dirs=INCLUDE_DIRS,
     extra_compile_args=EXTRA_COMPILE_ARGS,
+    extra_link_args=["-pthread"],
 )
 
 
