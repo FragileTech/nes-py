@@ -103,6 +103,14 @@ class PPU {
     /// the number of visible scan line dots
     NES_Pixel screen[VISIBLE_SCANLINES][SCANLINE_VISIBLE_DOTS];
 
+    /// whether dump_state / load_state carry the screen frame buffer. The
+    /// screen is a pure function of the rest of the PPU + picture bus state,
+    /// so excluding it (the default at the Emulator level) shrinks states
+    /// ~55x; the frame buffer is fully redrawn after stepping one frame. Not
+    /// itself part of the serialized state: both sides of a dump/load must
+    /// agree on the setting.
+    bool screen_in_state = true;
+
  public:
     /// Initialize a new PPU.
     PPU() : sprite_memory(64 * 4) { }
@@ -183,6 +191,9 @@ class PPU {
     /// Return a pointer to the screen buffer.
     inline NES_Pixel* get_screen_buffer() { return *screen; }
 
+    /// Set whether dump_state / load_state carry the screen frame buffer.
+    inline void set_screen_in_state(bool value) { screen_in_state = value; }
+
     inline size_t state_size() noexcept {
         return sprite_memory.size() + scanline_sprites.size() + 2 * sizeof(size_t)
             + sizeof(pipeline_state) + sizeof(cycles) + sizeof(scanline) + sizeof(is_even_frame)
@@ -192,7 +203,15 @@ class PPU {
             + sizeof(is_showing_background) + sizeof(is_hiding_edge_sprites)
             + sizeof(is_hiding_edge_background) + sizeof(is_long_sprites)
             + sizeof(is_interrupting) + sizeof(background_page) + sizeof(sprite_page)
-            + sizeof(data_address_increment) + sizeof(screen);
+            + sizeof(data_address_increment)
+            + (screen_in_state ? sizeof(screen) : 0);
+    }
+
+    /// Upper bound on state_size(): scanline_sprites holds at most 8 sprites,
+    /// so padding its current size up to 8 gives a size that is constant for
+    /// the lifetime of the PPU. Batch state buffers use this as a fixed stride.
+    inline size_t max_state_size() noexcept {
+        return state_size() - scanline_sprites.size() + 8;
     }
 
     void dump_state(char *buffer);

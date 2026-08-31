@@ -34,7 +34,7 @@ _LIB.Width.restype = ctypes.c_uint
 _LIB.Height.argtypes = None
 _LIB.Height.restype = ctypes.c_uint
 # setup the argument and return types for Initialize
-_LIB.Initialize.argtypes = [ctypes.c_wchar_p]
+_LIB.Initialize.argtypes = [ctypes.c_wchar_p, ctypes.c_int]
 _LIB.Initialize.restype = ctypes.c_void_p
 # setup the argument and return types for Controller
 _LIB.Controller.argtypes = [ctypes.c_void_p, ctypes.c_uint]
@@ -63,6 +63,8 @@ _LIB.Close.restype = None
 
 _LIB.StateSize.argtypes = [ctypes.c_void_p]
 _LIB.StateSize.restype = ctypes.c_size_t
+_LIB.MaxStateSize.argtypes = [ctypes.c_void_p]
+_LIB.MaxStateSize.restype = ctypes.c_size_t
 _LIB.DumpState.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
 _LIB.DumpState.restype = None
 _LIB.LoadState.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
@@ -104,12 +106,18 @@ class NESEnv(gym.Env):
     # action space is a bitmap of button press values for the 8 NES buttons
     action_space = Discrete(256)
 
-    def __init__(self, rom_path):
+    def __init__(self, rom_path, screen_in_state=False):
         """
         Create a new NES environment.
 
         Args:
             rom_path (str): the path to the ROM for the environment
+            screen_in_state (bool): whether get_state / set_state carry the
+                screen frame buffer (the legacy ~250KB format). Off by
+                default: states are ~4.5KB and the screen is redrawn from
+                them after stepping one frame; set_state alone does not
+                restore the screen pixels. States are only compatible
+                between environments that agree on this setting.
 
         Returns:
             None
@@ -139,7 +147,11 @@ class NESEnv(gym.Env):
         # store the ROM path
         self._rom_path = rom_path
         # initialize the C++ object for running the environment
-        self._env = _LIB.Initialize(self._rom_path)
+        self._env = _LIB.Initialize(self._rom_path, int(screen_in_state))
+        # the constant per-ROM state buffer size. the exact dump size varies
+        # by up to 8 bytes with PPU timing; buffers of this size are always
+        # large enough and stack into (batch, state_size) numpy arrays
+        self.state_size = _LIB.MaxStateSize(self._env)
         # setup a placeholder for a 'human' render mode viewer
         self.viewer = None
         # setup a placeholder for a pointer to a backup state
@@ -422,12 +434,32 @@ class NESEnv(gym.Env):
         return ["NOOP"]
 
     def get_state(self, state: Optional[np.ndarray] = None) -> np.ndarray:
+        """
+        Dump the emulator state into a fixed-size array.
+
+        Args:
+            state: an optional preallocated output array of at least
+                state_size bytes; allocated (zeroed) when not given
+
+        Returns:
+            a uint8 array of state_size bytes. The exact dump may be up to 8
+            bytes shorter than the array; trailing bytes are padding, and
+            arrays from the same environment always share the same size, so
+            they stack into a (batch, state_size) numpy array.
+
+        """
         if state is None:
-            state = np.empty(_LIB.StateSize(self._env), dtype=np.byte)
+            state = np.zeros(self.state_size, dtype=np.uint8)
+        elif state.nbytes < self.state_size:
+            msg = "state buffer must hold at least {} bytes, got {}"
+            raise ValueError(msg.format(self.state_size, state.nbytes))
+        elif not state.flags["C_CONTIGUOUS"]:
+            raise ValueError("state buffer must be C-contiguous")
         _LIB.DumpState(self._env, state.ctypes.data)
         return state
 
     def set_state(self, state: np.ndarray) -> None:
+        state = np.ascontiguousarray(state)
         _LIB.LoadState(self._env, state.ctypes.data)
 
 
